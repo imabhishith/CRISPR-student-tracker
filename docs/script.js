@@ -11,6 +11,32 @@ const subjectNames = {
   math: 'MATHEMATICS'
 };
 
+// 1) Put this near the very top of script.js
+const API_URL = window.location.origin + '/api';
+
+// 2) Replace any DOMContentLoaded blocks that do: processJsonData(sampleData)
+// with this initialization that loads from the API
+document.addEventListener('DOMContentLoaded', () => {
+  initializeFromAPI();
+});
+
+async function initializeFromAPI() {
+  try {
+    if (typeof showLoading === 'function') showLoading();
+    const res = await fetch(`${API_URL}/students`);
+    const json = await res.json();
+    if (!json.success) throw new Error('API returned success=false');
+    // json.data is already in the shape your code expects (roll, name, exam, chem, phy, bio, math, total, percent, max*). 
+    processJsonData(json.data || []);
+    if (typeof showStatus === 'function') showStatus(`✅ Loaded ${json.count ?? (json.data?.length || 0)} records`, 'success');
+  } catch (err) {
+    if (typeof showStatus === 'function') showStatus(`Error fetching data: ${err.message}`, 'error');
+    console.error('Admin init error:', err);
+  } finally {
+    if (typeof hideLoading === 'function') hideLoading();
+  }
+}
+
 // ============================================
 // DYNAMIC EXAM ORDERING - AUTO-UPDATED FROM BACKEND
 // ============================================
