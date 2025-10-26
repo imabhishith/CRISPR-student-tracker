@@ -1,3 +1,4 @@
+const API_URL = 'https://students-performanxe-tracker-s2uw.onrender.com/api';
 let students = [];
 let currentExpandedRow = null;
 let currentExpandedExam = null;
@@ -146,7 +147,7 @@ async function fetchStudentData() {
     showLoading();
     try {
         console.log('🔄 Fetching data from API...');
-        const response = await fetch('http://localhost:3001/api/students');
+        const response = await fetch(`${API_URL}/students`);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
